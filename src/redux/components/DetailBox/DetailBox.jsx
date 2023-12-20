@@ -2,6 +2,9 @@ import React, { useEffect } from "react";
 import { StyledDiv, StyledTable, StyledTh, StyledButton } from "./styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { QUERY_KEY } from "../../../query/keys.constans";
+import { useQuery } from "react-query";
+import { getTodos } from "../../../api/todos";
 
 /**
  * 컴포넌트 개요 : Todo 메인 컴포넌트에서 각 todo item의 [상세보기]를 선택했을 경우 보이는 컴포넌트 영역
@@ -17,9 +20,9 @@ function DetailBox() {
   const params = useParams();
 
   // 이 컴포넌트에서 아이템을 사용하기 위해, params로 전달받은 id를 이용-todo를 filtering
-  const filteredTodos = useSelector((state) => {
-    return state.todos.filter((item) => item.id === params.id);
-  });
+
+  const { data } = useQuery(QUERY_KEY.TODOS, getTodos, {});
+  const filteredTodos = data.filter((item) => item.id === params.id);
 
   // 화면이 최초 렌더링 되는 시점에 올바르지 않은 접근을 차단
   // 지금은 uuidv4()를 사용해서 새로고침할 때 마다 변경 -> DB 또는 Cookie 등 사용하면 해결
